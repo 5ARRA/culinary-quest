@@ -8,7 +8,7 @@ function loadGameData() {
     return data ? JSON.parse(data) : {
         currentLevel: 1, // Начинаем с уровня 1, а не 0
         totalPoints: 0,
-        completedDays: [], // [{level: 1, dish: "Блюдо 1", correct: true}]
+        completedDays: [], // [{level: 1, dish: "Блюдо 1", correct: true}]  <-- Убедись, что это есть
         currentQuestionAnswer: null, // Для хранения правильного ответа текущего вопроса
         selectedDishForCurrentDay: null // Для сохранения выбранного блюда перед вопросом
     };
@@ -27,8 +27,8 @@ const POINTS_PER_CORRECT_ANSWER = 100;
 // }, ...]
 const levelData = Array.from({ length: TOTAL_LEVELS }, (_, i) => ({
     dishes: [
-        { name: `Блюдо ${i + 1}.1 (День ${i + 1})`, desc: `Описание тестового блюда ${i + 1}.1` },
-        { name: `Блюдо ${i + 1}.2 (День ${i + 1})`, desc: `Описание тестового блюда ${i + 1}.2` }
+        { name: `Тестовое Блюдо ${i + 1}.1`, desc: `Описание тестового блюда ${i + 1}.1` },
+        { name: `Тестовое Блюдо ${i + 1}.2`, desc: `Описание тестового блюда ${i + 1}.2` }
     ],
     question: {
         text: `Это тестовый вопрос для Дня ${i + 1}. Что-то из наших воспоминаний? (Правильный ответ: Вариант Б)`,
@@ -77,7 +77,8 @@ if (document.getElementById('calendarGrid')) {
             if (i < gameData.currentLevel) {
                 dayCard.classList.add('completed');
                 // Проверяем, был ли ответ правильным для этого дня
-                const completedDayData = gameData.completedDays.find(d => d.level === i);
+                // ИСПРАВЛЕНИЕ: Добавляем проверку gameData.completedDays на существование
+                const completedDayData = gameData.completedDays && gameData.completedDays.find(d => d.level === i);
                 if (completedDayData && completedDayData.correctAnswer) {
                     dayCard.classList.add('correct-answer');
                 }
