@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Уровень</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h2 id="levelTitle">Уровень X: Выбери Блюдо</h2>
+
+        <div class="dish-selection">
+            <div class="dish-card">
+                <h3>Блюдо 1 (Название)</h3>
+                <p>Описание блюда 1. Пока что это просто текст.</p>
+                <button class="select-dish-btn" data-dish="1">Выбрать</button>
+            </div>
+            <div class="dish-card">
+                <h3>Блюдо 2 (Название)</h3>
+                <p>Описание блюда 2. Пока что это просто текст.</p>
+                <button class="select-dish-btn" data-dish="2">Выбрать</button>
+            </div>
+        </div>
+
+        <div class="question-section" style="display: none;">
+            <h3>Вопрос из нашей истории:</h3>
+            <p id="questionText">Это тестовый вопрос. Что-то из наших воспоминаний?</p>
+            <div class="options">
+                <input type="radio" id="optionA" name="answer" value="A">
+                <label for="optionA">Вариант А</label><br>
+                <input type="radio" id="optionB" name="answer" value="B">
+                <label for="optionB">Вариант Б</label><br>
+                <input type="radio" id="optionC" name="answer" value="C">
+                <label for="optionC">Вариант В</label><br>
+            </div>
+            <button id="submitAnswer">Ответить</button>
+            <p id="feedbackText" style="display: none;"></p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
