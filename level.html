@@ -7,7 +7,11 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
+    <div class="game-container">
+        <button id="homeButton" class="top-left-button" style="display: none;">Главный Экран</button>
+
+        <div class="points-display top-right-display">Набрано очков: <span id="currentPointsDisplay">0</span></div>
+
         <h2 id="levelTitle">Уровень X: Выбери Блюдо</h2>
 
         <div class="dish-selection">
@@ -38,6 +42,8 @@
             <p id="feedbackText" style="display: none;"></p>
         </div>
     </div>
+
+    <div id="pointsPopup" class="points-popup"></div>
 
     <script src="script.js"></script>
 </body>
