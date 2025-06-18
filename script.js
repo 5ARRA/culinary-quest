@@ -8,7 +8,7 @@ function loadGameData() {
     return data ? JSON.parse(data) : {
         currentLevel: 1, // Начинаем с уровня 1, а не 0
         totalPoints: 0,
-        completedDays: [], // [{level: 1, dish: "Блюдо 1", correct: true}]  <-- Убедись, что это есть
+        completedDays: [], // [{level: 1, dish: "Блюдо 1", correct: true}]
         currentQuestionAnswer: null, // Для хранения правильного ответа текущего вопроса
         selectedDishForCurrentDay: null // Для сохранения выбранного блюда перед вопросом
     };
@@ -20,11 +20,6 @@ const TOTAL_LEVELS = 30;
 const POINTS_PER_CORRECT_ANSWER = 100;
 
 // --- Данные для каждого уровня (пока что тестовые) ---
-// В реальном проекте, это был бы большой массив объектов с данными для каждого дня
-// [{
-//   dishes: [{name: "Овсянка", desc: "Легкий завтрак"}, {name: "Яичница", desc: "Сытный завтрак"}],
-//   question: {text: "Наш любимый фильм?", options: ["А", "Б", "В"], correct: "Б"},
-// }, ...]
 const levelData = Array.from({ length: TOTAL_LEVELS }, (_, i) => ({
     dishes: [
         { name: `Тестовое Блюдо ${i + 1}.1`, desc: `Описание тестового блюда ${i + 1}.1` },
@@ -38,15 +33,67 @@ const levelData = Array.from({ length: TOTAL_LEVELS }, (_, i) => ({
 }));
 
 
-// --- Логика для index.html (Календарь) ---
-if (document.getElementById('calendarGrid')) {
-    document.addEventListener('DOMContentLoaded', () => {
-        renderCalendar();
-        updateMainPageUI();
+// --- Функции для управления отображением секций ---
+function showSection(sectionId) {
+    document.querySelectorAll('.game-section').forEach(section => {
+        section.style.display = 'none'; // Скрываем все секции
+    });
+    document.getElementById(sectionId).style.display = 'block'; // Показываем нужную
 
-        document.getElementById('achievementsButton').addEventListener('click', () => {
-            window.location.href = 'achievements.html';
+    // Показываем/скрываем кнопку "Главный Экран"
+    if (sectionId === 'mainMenu') {
+        document.getElementById('homeButton').style.display = 'none';
+    } else {
+        document.getElementById('homeButton').style.display = 'block';
+    }
+    // Обновляем отображение очков (если нужно)
+    updatePointsDisplay();
+}
+
+function updatePointsDisplay() {
+    const pointsDisplay = document.getElementById('currentPointsDisplay');
+    if (pointsDisplay) {
+        pointsDisplay.textContent = gameData.totalPoints;
+    }
+    const shopPointsDisplay = document.getElementById('shopPointsDisplay');
+    if (shopPointsDisplay) {
+        shopPointsDisplay.textContent = gameData.totalPoints;
+    }
+}
+
+
+// --- Логика для index.html (Главное меню и Календарь) ---
+if (document.getElementById('mainMenu')) { // Проверяем, что мы на index.html
+    document.addEventListener('DOMContentLoaded', () => {
+        updatePointsDisplay(); // Обновляем очки при загрузке
+
+        // Обработчики кнопок главного меню
+        document.getElementById('startGameButton').addEventListener('click', () => {
+            showSection('calendarSection');
+            renderCalendar(); // Отрисовываем календарь при переходе
         });
+        document.getElementById('rulesButton').addEventListener('click', () => {
+            showSection('rulesSection');
+        });
+        document.getElementById('prizesShopButton').addEventListener('click', () => {
+            showSection('prizesShopSection');
+            updatePointsDisplay(); // Обновить очки в магазине
+        });
+        document.querySelectorAll('.backToMenuButton').forEach(button => {
+            button.addEventListener('click', () => {
+                showSection('mainMenu');
+            });
+        });
+        document.getElementById('homeButton').addEventListener('click', () => {
+            showSection('mainMenu');
+        });
+
+        // Показываем кнопку подарка, если все уровни пройдены
+        if (gameData.currentLevel > TOTAL_LEVELS) {
+            document.getElementById('secretGiftButton').style.display = 'block';
+        } else {
+            document.getElementById('secretGiftButton').style.display = 'none';
+        }
 
         document.getElementById('secretGiftButton').addEventListener('click', () => {
             alert(`Поздравляем! Ты набрала ${gameData.totalPoints} очков! Теперь ты можешь получить свой секретный подарок!`);
@@ -54,11 +101,7 @@ if (document.getElementById('calendarGrid')) {
             // window.location.href = 'secret_gift.html';
         });
 
-        // Показываем кнопку подарка, если все уровни пройдены
-        if (gameData.currentLevel > TOTAL_LEVELS) {
-            document.getElementById('secretGiftButton').style.display = 'block';
-        }
-    });
+    }); // Конец DOMContentLoaded для index.html
 
     function renderCalendar() {
         const calendarGrid = document.getElementById('calendarGrid');
@@ -77,7 +120,6 @@ if (document.getElementById('calendarGrid')) {
             if (i < gameData.currentLevel) {
                 dayCard.classList.add('completed');
                 // Проверяем, был ли ответ правильным для этого дня
-                // ИСПРАВЛЕНИЕ: Добавляем проверку gameData.completedDays на существование
                 const completedDayData = gameData.completedDays && gameData.completedDays.find(d => d.level === i);
                 if (completedDayData && completedDayData.correctAnswer) {
                     dayCard.classList.add('correct-answer');
@@ -96,11 +138,6 @@ if (document.getElementById('calendarGrid')) {
             calendarGrid.appendChild(dayCard);
         }
     }
-
-    function updateMainPageUI() {
-        document.getElementById('currentPointsDisplay').textContent = gameData.totalPoints;
-        // Прогресс-бар здесь уже не нужен, так как есть календарь
-    }
 }
 
 // --- Логика для level.html ---
@@ -112,6 +149,19 @@ if (document.getElementById('levelTitle')) {
             window.location.href = 'index.html';
             return;
         }
+
+        // Обновляем отображение очков на этой странице
+        const pointsDisplay = document.getElementById('currentPointsDisplay');
+        if (pointsDisplay) {
+            pointsDisplay.textContent = gameData.totalPoints;
+        }
+        document.getElementById('homeButton').style.display = 'block'; // Показываем кнопку "Главный Экран"
+
+        // Привязываем кнопку "Главный Экран"
+        document.getElementById('homeButton').addEventListener('click', () => {
+             window.location.href = 'index.html'; // Просто возвращаемся на главную
+        });
+
 
         const currentLevelIndex = gameData.currentLevel - 1; // Индекс в массиве levelData
         const currentLevelContent = levelData[currentLevelIndex];
@@ -163,6 +213,18 @@ if (document.getElementById('levelTitle')) {
                     feedbackText.textContent = `Правильно! Ты получаешь ${POINTS_PER_CORRECT_ANSWER} очков!`;
                     gameData.totalPoints += POINTS_PER_CORRECT_ANSWER;
                     isCorrect = true;
+
+                    // --- КОД ДЛЯ ПОКАЗА АНИМАЦИИ ОЧКОВ (из предыдущего ответа) ---
+                    const pointsPopup = document.getElementById('pointsPopup');
+                    if (pointsPopup) { // Проверяем, существует ли элемент
+                        pointsPopup.textContent = `+${POINTS_PER_CORRECT_ANSWER} ОЧКОВ!`;
+                        pointsPopup.style.opacity = '1';
+                        pointsPopup.style.animation = 'none';
+                        void pointsPopup.offsetWidth;
+                        pointsPopup.style.animation = 'fadeOutUp 3s forwards';
+                    }
+                    // --- КОНЕЦ АНИМАЦИИ ОЧКОВ ---
+
                 } else {
                     feedbackText.textContent = `Неверно. Правильный ответ был: "${gameData.currentQuestionAnswer}". Но блюдо всё равно будет приготовлено!`;
                     isCorrect = false;
@@ -173,7 +235,7 @@ if (document.getElementById('levelTitle')) {
             }
 
             feedbackText.style.display = 'block';
-            document.getElementById('submitAnswer').disabled = true; // Отключаем кнопку, чтобы не нажимали повторно
+            document.getElementById('submitAnswer').disabled = true; // Отключаем кнопку
 
             // Добавляем запись о пройденном дне в историю
             gameData.completedDays.push({
@@ -188,12 +250,12 @@ if (document.getElementById('levelTitle')) {
 
             saveGameData(gameData);
 
-            // Переход к следующему уровню или на главную страницу через 3 секунды
+            // Автоматический переход на главную через 3 секунды
             setTimeout(() => {
                 gameData.currentLevel++; // Переходим к следующему дню
                 saveGameData(gameData);
                 window.location.href = 'index.html'; // Всегда возвращаемся в календарь
-            }, 3000); // Задержка в 3 секунды
+            }, 3000); // Задержка в 3 секуды
         });
     });
 }
@@ -202,9 +264,15 @@ if (document.getElementById('levelTitle')) {
 // --- Логика для achievements.html ---
 if (document.getElementById('achievementsLevelDisplay')) {
     document.addEventListener('DOMContentLoaded', () => {
-        // Уровень отображаем как пройденные дни
         document.getElementById('achievementsLevelDisplay').textContent = Math.min(gameData.currentLevel -1, TOTAL_LEVELS);
         document.getElementById('achievementsPointsDisplay').textContent = gameData.totalPoints;
+
+        // Также отображаем кнопку "Главный Экран" на странице достижений
+        document.getElementById('homeButton').style.display = 'block';
+        document.getElementById('homeButton').addEventListener('click', () => {
+            window.location.href = 'index.html'; // Возвращаемся в календарь
+        });
+
 
         const list = document.getElementById('completedDishesList');
         if (gameData.completedDays.length === 0) {

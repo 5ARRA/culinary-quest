@@ -7,15 +7,42 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Наше 30-дневное Кулинарное Путешествие!</h1>
-        <p>Набрано очков: <span id="currentPointsDisplay">0</span></p>
+    <div class="game-container">
+        <button id="homeButton" class="top-left-button" style="display: none;">Главный Экран</button>
 
-        <div class="calendar-grid" id="calendarGrid">
-            </div>
+        <div class="points-display top-right-display">Набрано очков: <span id="currentPointsDisplay">0</span></div>
 
-        <button id="achievementsButton">Мои Достижения</button>
-        <button id="secretGiftButton" style="display: none;">Получить Секретный Подарок</button>
+        <div id="mainMenu" class="game-section">
+            <h1>Наше Кулинарное Путешествие!</h1>
+            <button id="startGameButton">Начать Путешествие</button>
+            <button id="rulesButton">Правила Игры</button>
+            <button id="prizesShopButton">Магазин Призов</button>
+            <button id="secretGiftButton" style="display: none;">Получить Секретный Подарок</button>
+        </div>
+
+        <div id="calendarSection" class="game-section" style="display: none;">
+            <h2>Выбери День для Приключения!</h2>
+            <div class="calendar-grid" id="calendarGrid">
+                </div>
+        </div>
+
+        <div id="rulesSection" class="game-section" style="display: none;">
+            <h2>Правила Игры</h2>
+            <p>Добро пожаловать в 30-дневное кулинарное приключение! Каждый день открывается новый уровень, где ты можешь выбрать одно из двух блюд.</p>
+            <p>После выбора тебе будет задан вопрос, связанный с нашими общими воспоминаниями. Если ответишь правильно, получишь 100 Кулинарных Звёзд!</p>
+            <p>По окончании 30 дней, все накопленные Кулинарные Звёзды можно будет обменять на секретный приз!</p>
+            <p>Удачи, мой Шеф-повар!</p>
+            <button class="backToMenuButton">Назад в Меню</button>
+        </div>
+
+        <div id="prizesShopSection" class="game-section" style="display: none;">
+            <h2>Магазин Призов</h2>
+            <p>Здесь ты сможешь обменять свои накопленные очки на удивительные призы в конце 30-дневного приключения!</p>
+            <p>Твои текущие очки: <span id="shopPointsDisplay">0</span></p>
+            <p>Список возможных призов появится, когда ты пройдешь все уровни.</p>
+            <p>Накопи больше очков, чтобы получить самый лучший подарок!</p>
+            <button class="backToMenuButton">Назад в Меню</button>
+        </div>
     </div>
 
     <script src="script.js"></script>

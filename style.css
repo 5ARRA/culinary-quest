@@ -1,61 +1,130 @@
+/* --- Общие стили и базовый фон "игры" --- */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f4f4f4;
+    background: linear-gradient(to bottom, #87CEEB, #FFFFFF); /* Небо с плавным переходом к белому */
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     margin: 0;
     color: #333;
-    padding: 20px; /* Добавим немного отступа */
-    box-sizing: border-box; /* Учитываем padding в размере элемента */
+    padding: 20px;
+    box-sizing: border-box;
+    position: relative; /* Для позиционирования облаков */
+    overflow: hidden; /* Чтобы облака не выходили за пределы видимости */
 }
 
-.container {
-    background-color: #fff;
+/* Контейнер для всего игрового интерфейса */
+.game-container {
+    background-color: rgba(255, 255, 255, 0.9); /* Полупрозрачный белый фон для основного контента */
     padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 20px; /* Более закругленные края */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Более выраженная тень */
     text-align: center;
     width: 100%;
-    max-width: 900px; /* Увеличим максимальную ширину для календаря */
+    max-width: 900px;
+    position: relative; /* Для позиционирования элементов внутри */
+    z-index: 10; /* Над облаками */
+    border: 3px solid #ff6f61; /* Рамка в цвет акцента */
 }
 
-h1, h2, h3 {
-    color: #ff6f61; /* Яркий акцентный цвет */
+/* Стили для заголовков */
+h1 {
+    color: #ff6f61;
+    font-size: 2.8em;
+    text-shadow: 2px 2px #fff; /* Обводка текста для игрового стиля */
+    margin-bottom: 30px;
+}
+h2 {
+    color: #7dcfb6; /* Зеленоватый оттенок */
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+h3 {
+    color: #555;
+    font-size: 1.5em;
 }
 
 p {
     margin: 10px 0;
+    font-size: 1.1em;
 }
 
-/* Стили для кнопок */
+/* Стили для кнопок меню */
 button {
-    background-color: #ff6f61;
+    background-color: #ff6f61; /* Основной цвет кнопок */
     color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
+    border: 2px solid #e65c50; /* Граница кнопки */
+    padding: 12px 25px;
+    border-radius: 8px; /* Немного более округлые */
     cursor: pointer;
-    font-size: 16px;
-    margin: 10px; /* Увеличим отступ между кнопками */
-    transition: background-color 0.3s ease;
+    font-size: 1.3em;
+    font-weight: bold;
+    margin: 10px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Тень для кнопок */
 }
 
 button:hover {
     background-color: #e65c50;
+    transform: translateY(-2px); /* Эффект "нажатия" */
 }
 
 button:disabled {
     background-color: #ccc;
+    border-color: #aaa;
     cursor: not-allowed;
+    box-shadow: none;
 }
 
-/* --- Стили для Календаря --- */
+/* Кнопка "Главный Экран" в левом верхнем углу */
+.top-left-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background-color: #55acee; /* Синий цвет для кнопки меню */
+    border-color: #4499dd;
+    font-size: 1em;
+    padding: 8px 15px;
+    z-index: 20; /* Выше всего */
+}
+.top-left-button:hover {
+    background-color: #4499dd;
+}
+
+/* Отображение очков в правом верхнем углу */
+.points-display {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 2px solid #7dcfb6;
+    border-radius: 8px;
+    padding: 8px 15px;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+    z-index: 20;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.points-display span {
+    color: #ff6f61; /* Цвет для числа очков */
+}
+
+/* Секции игры (меню, календарь, правила, магазин) */
+.game-section {
+    padding: 20px;
+    display: none; /* Все секции изначально скрыты, JS будет показывать нужную */
+}
+#mainMenu {
+    display: block; /* Главное меню показывается по умолчанию */
+}
+
+/* --- Стили для Календаря (без изменений, скопировано из предыдущего) --- */
 .calendar-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* 100px мин. ширина, авто-размер */
-    gap: 15px; /* Промежутки между днями */
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 15px;
     margin: 30px 0;
 }
 
@@ -68,16 +137,15 @@ button:disabled {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 100px; /* Минимальная высота карточки */
+    min-height: 100px;
     font-size: 1.1em;
     font-weight: bold;
     color: #555;
     transition: all 0.3s ease;
-    cursor: pointer; /* По умолчанию курсор pointer */
-    position: relative; /* Для иконок статуса */
+    cursor: pointer;
+    position: relative;
 }
 
-/* Стили для недоступных/будущих дней */
 .calendar-day-card.locked {
     background-color: #e0e0e0;
     color: #999;
@@ -86,62 +154,52 @@ button:disabled {
 }
 
 .calendar-day-card.locked::after {
-    content: '🔒'; /* Иконка замка */
+    content: '🔒';
     position: absolute;
     top: 5px;
     right: 5px;
     font-size: 0.8em;
 }
 
-/* Стили для текущего активного дня */
 .calendar-day-card.active {
-    background-color: #7dcfb6; /* Цвет текущего дня */
+    background-color: #7dcfb6;
     color: white;
     border-color: #62b196;
-    box-shadow: 0 0 15px rgba(125, 207, 182, 0.5); /* Свечение */
-    animation: pulse 1.5s infinite alternate; /* Анимация пульсации */
+    box-shadow: 0 0 15px rgba(125, 207, 182, 0.5);
+    animation: pulse 1.5s infinite alternate;
 }
 
 .calendar-day-card.active:hover {
     background-color: #62b196;
-    transform: translateY(-3px); /* Небольшой эффект при наведении */
+    transform: translateY(-3px);
 }
 
-/* Стили для пройденных дней */
 .calendar-day-card.completed {
-    background-color: #c9e4ed; /* Светло-голубой для пройденных */
+    background-color: #c9e4ed;
     color: #4a6c80;
     border-color: #a4d2e0;
-    cursor: default; /* Курсор по умолчанию */
+    cursor: default;
 }
 
 .calendar-day-card.completed::after {
-    content: '✅'; /* Иконка галочки */
+    content: '✅';
     position: absolute;
     top: 5px;
     right: 5px;
     font-size: 0.8em;
 }
 
-/* Если пройден с правильным ответом - можно добавить звездочку */
 .calendar-day-card.completed.correct-answer::before {
-    content: '⭐'; /* Иконка звезды */
+    content: '⭐';
     position: absolute;
     bottom: 5px;
     left: 5px;
     font-size: 0.8em;
 }
 
-/* Анимация пульсации для активного дня */
 @keyframes pulse {
-    from {
-        transform: scale(1);
-        box-shadow: 0 0 15px rgba(125, 207, 182, 0.5);
-    }
-    to {
-        transform: scale(1.03);
-        box-shadow: 0 0 25px rgba(125, 207, 182, 0.8);
-    }
+    from { transform: scale(1); box-shadow: 0 0 15px rgba(125, 207, 182, 0.5); }
+    to { transform: scale(1.03); box-shadow: 0 0 25px rgba(125, 207, 182, 0.8); }
 }
 
 /* --- Стили для страницы уровня (level.html) --- */
@@ -157,10 +215,10 @@ button:disabled {
     border-radius: 8px;
     padding: 15px;
     margin: 10px;
-    width: 45%; /* Для двух карточек в ряд */
+    width: 45%;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     background-color: #fafafa;
-    min-width: 250px; /* Минимальная ширина для адаптивности */
+    min-width: 250px;
 }
 
 .question-section {
@@ -179,16 +237,70 @@ button:disabled {
     margin-right: 10px;
 }
 
-/* Адаптивность для мобильных устройств */
-@media (max-width: 600px) {
+/* Стили для всплывающего окна очков */
+.points-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(125, 207, 182, 0.9);
+    color: white;
+    padding: 20px 40px;
+    border-radius: 10px;
+    font-size: 2em;
+    font-weight: bold;
+    opacity: 0;
+    animation: fadeOutUp 3s forwards;
+    pointer-events: none;
+    z-index: 1000;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 150px;
+}
+
+@keyframes fadeOutUp {
+    0% { opacity: 0; transform: translate(-50%, -50px); }
+    20% { opacity: 1; transform: translate(-50%, 0); }
+    80% { opacity: 1; transform: translate(-50%, 0); }
+    100% { opacity: 0; transform: translate(-50%, -50px); }
+}
+
+
+/* --- Адаптивность для мобильных устройств --- */
+@media (max-width: 768px) {
+    .game-container {
+        padding: 15px;
+        border-radius: 10px;
+    }
+    h1 {
+        font-size: 2em;
+    }
+    h2 {
+        font-size: 1.5em;
+    }
+    button {
+        font-size: 1.1em;
+        padding: 10px 20px;
+    }
+    .top-left-button, .points-display {
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        font-size: 0.9em;
+        padding: 5px 10px;
+    }
+    .points-display {
+        left: auto; /* Сбрасываем left для правого позиционирования */
+        right: 10px;
+    }
     .calendar-grid {
-        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); /* Меньше ширина на моб. */
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
         gap: 10px;
     }
     .dish-card {
-        width: 100%; /* Карточки блюд в столбик */
-    }
-    .container {
-        padding: 15px;
+        width: 100%;
+        min-width: unset;
     }
 }
