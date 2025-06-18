@@ -41,10 +41,10 @@ function showSection(sectionId) {
     document.getElementById(sectionId).style.display = 'block'; // Показываем нужную
 
     // Показываем/скрываем кнопку "Главный Экран"
-    if (sectionId === 'mainMenu') {
-        document.getElementById('homeButton').style.display = 'none';
+    if (sectionId === 'mainMenu' || sectionId === 'rulesSection' || sectionId === 'prizesShopSection') {
+        document.getElementById('homeButton').style.display = 'none'; // Скрываем на главном меню и подразделах
     } else {
-        document.getElementById('homeButton').style.display = 'block';
+        document.getElementById('homeButton').style.display = 'block'; // Показываем на игровых секциях (календарь)
     }
     // Обновляем отображение очков (если нужно)
     updatePointsDisplay();
@@ -66,6 +66,7 @@ function updatePointsDisplay() {
 if (document.getElementById('mainMenu')) { // Проверяем, что мы на index.html
     document.addEventListener('DOMContentLoaded', () => {
         updatePointsDisplay(); // Обновляем очки при загрузке
+        showSection('mainMenu'); // Показываем главное меню по умолчанию
 
         // Обработчики кнопок главного меню
         document.getElementById('startGameButton').addEventListener('click', () => {
@@ -79,11 +80,14 @@ if (document.getElementById('mainMenu')) { // Проверяем, что мы н
             showSection('prizesShopSection');
             updatePointsDisplay(); // Обновить очки в магазине
         });
+
+        // Обработчики для кнопок "Назад в Меню"
         document.querySelectorAll('.backToMenuButton').forEach(button => {
             button.addEventListener('click', () => {
                 showSection('mainMenu');
             });
         });
+        // Обработчик для глобальной кнопки "Главный Экран"
         document.getElementById('homeButton').addEventListener('click', () => {
             showSection('mainMenu');
         });
@@ -101,6 +105,18 @@ if (document.getElementById('mainMenu')) { // Проверяем, что мы н
             // window.location.href = 'secret_gift.html';
         });
 
+        // Обработчик для кнопки сброса прогресса
+        document.getElementById('resetGameButton').addEventListener('click', () => {
+            if (confirm('Вы уверены, что хотите сбросить весь прогресс? Это действие необратимо!')) {
+                localStorage.removeItem('gameProgress'); // Удаляем данные из локального хранилища
+                gameData = loadGameData(); // Загружаем начальные данные
+                updatePointsDisplay(); // Обновляем отображение очков
+                renderCalendar(); // Перерисовываем календарь, если он открыт
+                showSection('mainMenu'); // Возвращаемся в главное меню
+                document.getElementById('secretGiftButton').style.display = 'none'; // Скрываем кнопку подарка
+                alert('Прогресс игры сброшен!');
+            }
+        });
     }); // Конец DOMContentLoaded для index.html
 
     function renderCalendar() {
@@ -214,7 +230,7 @@ if (document.getElementById('levelTitle')) {
                     gameData.totalPoints += POINTS_PER_CORRECT_ANSWER;
                     isCorrect = true;
 
-                    // --- КОД ДЛЯ ПОКАЗА АНИМАЦИИ ОЧКОВ (из предыдущего ответа) ---
+                    // --- КОД ДЛЯ ПОКАЗА АНИМАЦИИ ОЧКОВ ---
                     const pointsPopup = document.getElementById('pointsPopup');
                     if (pointsPopup) { // Проверяем, существует ли элемент
                         pointsPopup.textContent = `+${POINTS_PER_CORRECT_ANSWER} ОЧКОВ!`;
@@ -270,7 +286,7 @@ if (document.getElementById('achievementsLevelDisplay')) {
         // Также отображаем кнопку "Главный Экран" на странице достижений
         document.getElementById('homeButton').style.display = 'block';
         document.getElementById('homeButton').addEventListener('click', () => {
-            window.location.href = 'index.html'; // Возвращаемся в календарь
+            window.location.href = 'index.html'; // Возвращаемся в главное меню
         });
 
 

@@ -304,3 +304,34 @@ button:disabled {
         min-width: unset;
     }
 }
+
+/* --- Стили для главного меню (чтобы кнопки были в столбик) --- */
+#mainMenu button {
+    display: block; /* Каждая кнопка на новой строке */
+    width: 80%; /* Задаем ширину, чтобы они не были слишком широкими */
+    max-width: 300px; /* Ограничиваем максимальную ширину */
+    margin: 15px auto; /* Центрируем и добавляем отступ сверху/снизу */
+}
+
+/* --- Стили для кнопок выбора блюд (убеждаемся, что они работают) --- */
+.dish-selection .select-dish-btn {
+    /* Эти стили специфичны для кнопок выбора блюд, они могут отличаться от обычных */
+    background-color: #ff6f61;
+    color: white;
+    border: 2px solid #e65c50;
+    padding: 10px 20px; /* Увеличиваем padding для лучшего внешнего вида */
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1em; /* Делаем шрифт чуть меньше, чем у главных кнопок */
+    font-weight: bold;
+    margin-top: 10px; /* Отступ от описания блюда */
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: auto; /* Сбрасываем width, чтобы кнопка подстраивалась под контент */
+    display: inline-block; /* Чтобы можно было применять margin */
+}
+
+.dish-selection .select-dish-btn:hover {
+    background-color: #e65c50;
+    transform: translateY(-2px);
+}
