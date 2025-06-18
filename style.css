@@ -7,6 +7,8 @@ body {
     min-height: 100vh;
     margin: 0;
     color: #333;
+    padding: 20px; /* Добавим немного отступа */
+    box-sizing: border-box; /* Учитываем padding в размере элемента */
 }
 
 .container {
@@ -15,31 +17,19 @@ body {
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
-    width: 90%;
-    max-width: 600px;
+    width: 100%;
+    max-width: 900px; /* Увеличим максимальную ширину для календаря */
 }
 
 h1, h2, h3 {
     color: #ff6f61; /* Яркий акцентный цвет */
 }
 
-.progress-bar-container {
-    width: 100%;
-    background-color: #e0e0e0;
-    border-radius: 5px;
-    margin: 20px 0;
-    height: 20px;
-    overflow: hidden;
+p {
+    margin: 10px 0;
 }
 
-.progress-bar {
-    height: 100%;
-    width: 0%; /* Будет меняться JS */
-    background-color: #7dcfb6; /* Цвет прогресса */
-    border-radius: 5px;
-    transition: width 0.5s ease-in-out;
-}
-
+/* Стили для кнопок */
 button {
     background-color: #ff6f61;
     color: white;
@@ -48,7 +38,7 @@ button {
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
-    margin: 5px;
+    margin: 10px; /* Увеличим отступ между кнопками */
     transition: background-color 0.3s ease;
 }
 
@@ -56,6 +46,105 @@ button:hover {
     background-color: #e65c50;
 }
 
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* --- Стили для Календаря --- */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* 100px мин. ширина, авто-размер */
+    gap: 15px; /* Промежутки между днями */
+    margin: 30px 0;
+}
+
+.calendar-day-card {
+    background-color: #f9f9f9;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100px; /* Минимальная высота карточки */
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #555;
+    transition: all 0.3s ease;
+    cursor: pointer; /* По умолчанию курсор pointer */
+    position: relative; /* Для иконок статуса */
+}
+
+/* Стили для недоступных/будущих дней */
+.calendar-day-card.locked {
+    background-color: #e0e0e0;
+    color: #999;
+    cursor: not-allowed;
+    border-color: #ccc;
+}
+
+.calendar-day-card.locked::after {
+    content: '🔒'; /* Иконка замка */
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 0.8em;
+}
+
+/* Стили для текущего активного дня */
+.calendar-day-card.active {
+    background-color: #7dcfb6; /* Цвет текущего дня */
+    color: white;
+    border-color: #62b196;
+    box-shadow: 0 0 15px rgba(125, 207, 182, 0.5); /* Свечение */
+    animation: pulse 1.5s infinite alternate; /* Анимация пульсации */
+}
+
+.calendar-day-card.active:hover {
+    background-color: #62b196;
+    transform: translateY(-3px); /* Небольшой эффект при наведении */
+}
+
+/* Стили для пройденных дней */
+.calendar-day-card.completed {
+    background-color: #c9e4ed; /* Светло-голубой для пройденных */
+    color: #4a6c80;
+    border-color: #a4d2e0;
+    cursor: default; /* Курсор по умолчанию */
+}
+
+.calendar-day-card.completed::after {
+    content: '✅'; /* Иконка галочки */
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 0.8em;
+}
+
+/* Если пройден с правильным ответом - можно добавить звездочку */
+.calendar-day-card.completed.correct-answer::before {
+    content: '⭐'; /* Иконка звезды */
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    font-size: 0.8em;
+}
+
+/* Анимация пульсации для активного дня */
+@keyframes pulse {
+    from {
+        transform: scale(1);
+        box-shadow: 0 0 15px rgba(125, 207, 182, 0.5);
+    }
+    to {
+        transform: scale(1.03);
+        box-shadow: 0 0 25px rgba(125, 207, 182, 0.8);
+    }
+}
+
+/* --- Стили для страницы уровня (level.html) --- */
 .dish-selection {
     display: flex;
     justify-content: space-around;
@@ -71,6 +160,7 @@ button:hover {
     width: 45%; /* Для двух карточек в ряд */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     background-color: #fafafa;
+    min-width: 250px; /* Минимальная ширина для адаптивности */
 }
 
 .question-section {
@@ -87,4 +177,18 @@ button:hover {
 
 .options input[type="radio"] {
     margin-right: 10px;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 600px) {
+    .calendar-grid {
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); /* Меньше ширина на моб. */
+        gap: 10px;
+    }
+    .dish-card {
+        width: 100%; /* Карточки блюд в столбик */
+    }
+    .container {
+        padding: 15px;
+    }
 }
