@@ -286,6 +286,25 @@ button:disabled {
     margin-right: 10px;
 }
 
+/* Стили для текстового поля ответа */
+.text-input-answer {
+    width: 80%;
+    padding: 10px;
+    margin: 15px auto;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    font-size: 1.1em;
+    display: block; /* Чтобы был по центру */
+    box-sizing: border-box; /* Включаем padding и border в ширину */
+}
+
+.text-input-answer:focus {
+    border-color: #7dcfb6;
+    outline: none;
+    box-shadow: 0 0 5px rgba(125, 207, 182, 0.5);
+}
+
+
 /* Стили для всплывающего окна очков */
 .points-popup {
     position: fixed;

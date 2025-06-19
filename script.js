@@ -21,7 +21,7 @@ const POINTS_PER_CORRECT_ANSWER = 100;
 
 // --- Данные для каждого уровня ---
 const levelData = [
-    // УРОВЕНЬ 1 (День 1) - Заполнен твоими данными
+    // УРОВЕНЬ 1 (День 1)
     {
         dishes: [
             { name: "Сэндвич с омлетом, жареной колбаской, сыром и помидорами", desc: "Утренний шедевр, который задаст тон всему дню!" },
@@ -29,28 +29,42 @@ const levelData = [
         ],
         question: {
             text: "В каком классе я впервые приготовил тебе еду?",
-            options: ["В 9 классе", "В 10 классе", "В 11 классе"], // Варианты, которые мы обсудили
-            correctAnswer: "В 10 классе" // Правильный ответ
+            options: ["В 9 классе", "В 10 классе", "В 11 классе"],
+            correctAnswer: "В 10 классе",
+            inputType: 'radio' // Тип ввода: радио-кнопки
         }
     },
-    // УРОВЕНЬ 2 (День 2) - Тестовые данные (нужно будет заполнить)
+    // УРОВЕНЬ 2 (День 2) - С ВВОДОМ ТЕКСТА
     {
         dishes: [
-            { name: "Тестовое Блюдо 2.1", desc: "Описание тестового блюда 2.1" },
-            { name: "Тестовое Блюдо 2.2", desc: "Описание тестового блюда 2.2" }
+            { name: "Пирог с курицей", desc: "Аппетитный домашний пирог с нежным куриным филе – идеально для обеда или ужина." },
+            { name: "Пицца", desc: "Выбери любую начинку, и я сделаю её сам(а) для тебя! Классический вкус любимой пиццы." }
         ],
         question: {
-            text: "Это тестовый вопрос для Дня 2. Что-то из наших воспоминаний? (Правильный ответ: Вариант Б)",
-            options: ['Вариант А', 'Вариант Б', 'Вариант В'],
-            correctAnswer: 'Вариант Б'
+            text: "Какой первый фильм мы смотрели впервые ?",
+            correctAnswer: "аватар 3", // Точный ответ для сравнения
+            inputType: 'text' // Тип ввода: текстовое поле
+        }
+    },
+    // УРОВЕНЬ 3 (День 3) - С ВЫБОРОМ ИЗ ВАРИАНТОВ
+    {
+        dishes: [
+            { name: "Паста Болоньезе (моя версия)", desc: "Классическая паста с насыщенным мясным соусом, как ты любишь!" },
+            { name: "Паста Альфредо (постараюсь)", desc: "Нежная паста в сливочном соусе, которую я приготовлю специально для тебя!" }
+        ],
+        question: {
+            text: "Когда впервые мы пошли на свидание?",
+            options: ["6 января", "5 января", "31 декабря"],
+            correctAnswer: "6 января",
+            inputType: 'radio' // Тип ввода: радио-кнопки
         }
     },
     // ... и так далее до 30 уровней.
     // Автоматическое заполнение тестовыми данными, если реальных дней меньше 30.
-    // Эта часть остается в конце массива levelData.
 ];
 
 // Чтобы массив содержал 30 элементов, добавим остальные тестовые, если их меньше 30.
+// Убедитесь, что эта часть кода остается в конце, чтобы дополнять массив.
 while (levelData.length < TOTAL_LEVELS) {
     let i = levelData.length;
     levelData.push({
@@ -61,7 +75,8 @@ while (levelData.length < TOTAL_LEVELS) {
         question: {
             text: `Это тестовый вопрос для Дня ${i + 1}. Что-то из наших воспоминаний? (Правильный ответ: Вариант Б)`,
             options: ['Вариант А', 'Вариант Б', 'Вариант В'],
-            correctAnswer: 'Вариант Б'
+            correctAnswer: 'Вариант Б',
+            inputType: 'radio' // По умолчанию для тестовых вопросов - радио-кнопки
         }
     });
 }
@@ -75,8 +90,8 @@ function showSection(sectionId) {
     document.getElementById(sectionId).style.display = 'block'; // Показываем нужную
 
     // Показываем/скрываем кнопку "Главный Экран"
+    // 'achievementsSection' добавлен сюда, если мы создадим такую секцию в index.html
     if (sectionId === 'mainMenu' || sectionId === 'rulesSection' || sectionId === 'prizesShopSection' || sectionId === 'achievementsSection') {
-        // 'achievementsSection' добавлен сюда, если мы создадим такую секцию в index.html
         document.getElementById('homeButton').style.display = 'none'; // Скрываем на главном меню и подразделах
     } else {
         document.getElementById('homeButton').style.display = 'block'; // Показываем на игровых секциях (календарь)
@@ -249,17 +264,9 @@ if (document.getElementById('levelTitle')) {
             document.querySelectorAll('.dish-card h3')[1].textContent = currentLevelContent.dishes[1].name;
             document.querySelectorAll('.dish-card p')[1].textContent = currentLevelContent.dishes[1].desc;
 
-            // Заполняем вопрос и варианты ответов (скрыто, пока не выбрано блюдо)
-            document.getElementById('questionText').textContent = currentLevelContent.question.text;
-            document.getElementById('optionA').value = currentLevelContent.question.options[0];
-            document.querySelector('label[for="optionA"]').textContent = currentLevelContent.question.options[0];
-            document.getElementById('optionB').value = currentLevelContent.question.options[1];
-            document.querySelector('label[for="optionB"]').textContent = currentLevelContent.question.options[1];
-            document.getElementById('optionC').value = currentLevelContent.question.options[2];
-            document.querySelector('label[for="optionC"]').textContent = currentLevelContent.question.options[2];
-
             // Сохраняем правильный ответ и выбранное блюдо временно
             gameData.currentQuestionAnswer = currentLevelContent.question.correctAnswer;
+            gameData.currentQuestionType = currentLevelContent.question.inputType || 'radio'; // Сохраняем тип вопроса
             saveGameData(gameData);
 
             // Обработка выбора блюда
@@ -271,6 +278,9 @@ if (document.getElementById('levelTitle')) {
                     // Скрываем выбор блюд и показываем вопрос
                     dishSelectionSection.style.display = 'none';
                     questionSection.style.display = 'block';
+                    
+                    // Динамически создаем элементы для ввода ответа
+                    renderQuestionInput(currentLevelContent.question);
 
                     gameData.selectedDishForCurrentDay = selectedDishName; // Сохраняем выбранное блюдо
                     saveGameData(gameData);
@@ -279,30 +289,42 @@ if (document.getElementById('levelTitle')) {
 
             // Обработка ответа на вопрос
             submitAnswerButton.addEventListener('click', () => {
-                const selectedOption = document.querySelector('input[name="answer"]:checked');
+                let userAnswer;
                 let isCorrect = false;
 
-                if (selectedOption) {
-                    if (selectedOption.value === gameData.currentQuestionAnswer) {
-                        feedbackText.textContent = `Правильно! Ты получаешь ${POINTS_PER_CORRECT_ANSWER} очков!`;
-                        gameData.totalPoints += POINTS_PER_CORRECT_ANSWER;
-                        isCorrect = true;
-
-                        if (pointsPopup) {
-                            pointsPopup.textContent = `+${POINTS_PER_CORRECT_ANSWER} ОЧКОВ!`;
-                            pointsPopup.style.opacity = '1';
-                            pointsPopup.style.animation = 'none';
-                            void pointsPopup.offsetWidth;
-                            pointsPopup.style.animation = 'fadeOutUp 3s forwards';
-                        }
-
-                    } else {
-                        feedbackText.textContent = `Неверно. Правильный ответ был: "${gameData.currentQuestionAnswer}". Но блюдо всё равно будет приготовлено!`;
-                        isCorrect = false;
+                if (gameData.currentQuestionType === 'radio') {
+                    const selectedOption = document.querySelector('input[name="answer"]:checked');
+                    if (!selectedOption) {
+                        feedbackText.textContent = "Пожалуйста, выбери вариант ответа.";
+                        return;
                     }
+                    userAnswer = selectedOption.value;
+                } else if (gameData.currentQuestionType === 'text') {
+                    const textInput = document.getElementById('textAnswerInput');
+                    if (!textInput || textInput.value.trim() === '') {
+                        feedbackText.textContent = "Пожалуйста, введи свой ответ.";
+                        return;
+                    }
+                    userAnswer = textInput.value.trim();
+                }
+
+                // Сравнение ответа
+                if (userAnswer.toLowerCase() === gameData.currentQuestionAnswer.toLowerCase()) { // Сравниваем без учета регистра
+                    feedbackText.textContent = `Правильно! Ты получаешь ${POINTS_PER_CORRECT_ANSWER} очков!`;
+                    gameData.totalPoints += POINTS_PER_CORRECT_ANSWER;
+                    isCorrect = true;
+
+                    if (pointsPopup) {
+                        pointsPopup.textContent = `+${POINTS_PER_CORRECT_ANSWER} ОЧКОВ!`;
+                        pointsPopup.style.opacity = '1';
+                        pointsPopup.style.animation = 'none';
+                        void pointsPopup.offsetWidth;
+                        pointsPopup.style.animation = 'fadeOutUp 3s forwards';
+                    }
+
                 } else {
-                    feedbackText.textContent = "Пожалуйста, выбери вариант ответа.";
-                    return;
+                    feedbackText.textContent = `Неверно. Правильный ответ был: "${gameData.currentQuestionAnswer}". Но блюдо всё равно будет приготовлено!`;
+                    isCorrect = false;
                 }
 
                 feedbackText.style.display = 'block';
@@ -318,7 +340,7 @@ if (document.getElementById('levelTitle')) {
                 // Очищаем временные данные
                 gameData.currentQuestionAnswer = null;
                 gameData.selectedDishForCurrentDay = null;
-
+                gameData.currentQuestionType = null; // Очищаем тип вопроса
                 saveGameData(gameData);
 
                 // Автоматический переход на главную через 3 секунды
@@ -338,7 +360,9 @@ if (document.getElementById('levelTitle')) {
             dishSelectionSection.style.display = 'none'; // Скрываем выбор блюд
             questionSection.style.display = 'block'; // Показываем секцию вопроса
             submitAnswerButton.style.display = 'none'; // Скрываем кнопку ответа
-            document.querySelector('.options').style.display = 'none'; // Скрываем варианты ответов
+
+            const answerInputContainer = document.getElementById('answerInputContainer');
+            answerInputContainer.innerHTML = ''; // Очищаем контейнер
 
             // Получаем данные о завершенном дне из completedDays
             const completedDayData = gameData.completedDays.find(d => d.level === requestedLevel);
@@ -357,6 +381,65 @@ if (document.getElementById('levelTitle')) {
                 // Если по каким-то причинам данные не найдены (редко, но возможно при сбросе или ошибках)
                 document.getElementById('questionText').textContent = `Данные для Дня ${requestedLevel} не найдены. Возможно, этот день был сброшен или ещё не пройден.`;
             }
+        }
+    });
+
+    // Новая функция для динамического создания поля ввода ответа
+    function renderQuestionInput(questionContent) {
+        const answerInputContainer = document.getElementById('answerInputContainer');
+        answerInputContainer.innerHTML = ''; // Очищаем старые элементы
+
+        if (questionContent.inputType === 'text') {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.id = 'textAnswerInput';
+            input.placeholder = 'Введи свой ответ...';
+            input.classList.add('text-input-answer'); // Добавим класс для стилей
+            answerInputContainer.appendChild(input);
+        } else { // По умолчанию или 'radio'
+            questionContent.options.forEach((option, index) => {
+                const input = document.createElement('input');
+                input.type = 'radio';
+                input.id = `option${String.fromCharCode(65 + index)}`; // optionA, optionB
+                input.name = 'answer';
+                input.value = option;
+
+                const label = document.createElement('label');
+                label.htmlFor = `option${String.fromCharCode(65 + index)}`;
+                label.textContent = option;
+
+                answerInputContainer.appendChild(input);
+                answerInputContainer.appendChild(label);
+                answerInputContainer.appendChild(document.createElement('br')); // Перенос строки
+            });
+        }
+    }
+}
+
+
+// --- Логика для achievements.html ---
+if (document.getElementById('achievementsLevelDisplay')) {
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('achievementsLevelDisplay').textContent = Math.min(gameData.currentLevel -1, TOTAL_LEVELS);
+        document.getElementById('achievementsPointsDisplay').textContent = gameData.totalPoints;
+
+        // Также отображаем кнопку "Главный Экран" на странице достижений
+        document.getElementById('homeButton').style.display = 'block';
+        document.getElementById('homeButton').addEventListener('click', () => {
+            window.location.href = 'index.html'; // Возвращаемся в главное меню
+        });
+
+
+        const list = document.getElementById('completedDishesList');
+        if (gameData.completedDays.length === 0) {
+            list.innerHTML = '<li>Пока что нет пройденных дней.</li>';
+        } else {
+            list.innerHTML = ''; // Очищаем список перед заполнением
+            gameData.completedDays.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = `День ${item.level}: ${item.dish} (Ответ: ${item.correctAnswer ? 'Правильно, +100 очков' : 'Неправильно'})`;
+                list.appendChild(li);
+            });
         }
     });
 }
