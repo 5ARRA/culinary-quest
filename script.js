@@ -541,4 +541,4 @@ async function sendProgressEmail(
     } catch (error) {
         console.error("Ошибка сети при отправке email:", error);
     }
-} 
+}
