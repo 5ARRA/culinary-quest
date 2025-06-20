@@ -318,7 +318,7 @@ if (document.getElementById('levelTitle')) {
 
                 if (gameData.currentQuestionType === 'radio') {
                     const selectedOption = document.querySelector('input[name="answer"]:checked');
-                    if (!selectedOption) {
+                    if (!selectedOption) { // <--- Эта проверка здесь, чтобы избежать ошибки
                         feedbackText.textContent = "Пожалуйста, выбери вариант ответа.";
                         return;
                     }
